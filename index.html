@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZYGOMAGX - Face Rating & Blackpill</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+body{background:#111;color:#fff;}
+header{background:#000;color:#fff;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,0.5);}
+header h1{font-size:28px;font-weight:bold;}
+.profile-icon{width:40px;height:40px;border-radius:50%;background:#222;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;transition:0.3s;}
+.profile-icon:hover{background:#444;}
+.container{padding:20px;max-width:900px;margin:auto;}
+.btn{background:#222;color:#fff;padding:12px 20px;border:none;cursor:pointer;border-radius:8px;margin-top:20px;transition:0.3s;font-weight:bold;}
+.btn:hover{background:#555;}
+#signup-page,#login-page,#home-page,#rating-form,#profile-page{display:none;}
+#signup-page.active,#login-page.active,#home-page.active,#rating-form.active,#profile-page.active{display:block;}
+.card{background:#1a1a1a;padding:20px;border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,0.3);margin-bottom:20px;transition:0.3s;}
+.card:hover{box-shadow:0 6px 20px rgba(0,0,0,0.5);}
+input,select,textarea{width:100%;padding:10px;margin:10px 0;border:1px solid #333;border-radius:6px;background:#111;color:#fff;}
+input::placeholder,textarea::placeholder{color:#aaa;}
+textarea{resize:none;}
+img{max-width:100%;border-radius:8px;margin-top:10px;}
+.hero{background:linear-gradient(135deg,#111,#222,#000);padding:40px;text-align:center;border-radius:10px;margin-bottom:20px;}
+.hero h1{font-size:36px;margin-bottom:20px;}
+.hero p{font-size:18px;margin-bottom:20px;color:#aaa;}
+#blackpill-feed{display:flex;overflow-x:auto;padding:10px 0;margin-bottom:20px;}
+.blackpill-card{min-width:250px;background:#222;margin-right:15px;padding:15px;border-radius:8px;box-shadow:0 3px 10px rgba(0,0,0,0.4);flex-shrink:0;}
+.stats{display:flex;justify-content:space-around;margin-bottom:20px;}
+.stats div{background:#222;padding:15px;border-radius:8px;text-align:center;flex:1;margin:0 5px;}
+.stats div p:first-child{font-size:20px;font-weight:bold;color:#0f0;}
+.stats div p:last-child{color:#aaa;}
+
+/* Rating Card UI */
+.rating-card{
+  background: #1a1a1a;
+  color: #fff;
+  width: 320px;
+  border-radius: 20px;
+  padding: 25px;
+  margin: 20px auto;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.rating-card:hover{
+  transform: translateY(-10px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+}
+.avatar-wrapper{
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #0f0;
+  box-shadow: 0 4px 15px rgba(0,255,0,0.3);
+  animation: popIn 0.5s ease forwards;
+}
+.avatar{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.rating-card .rating{
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #0f0;
+  animation: fadeInUp 0.5s ease 0.3s forwards;
+  opacity: 0;
+}
+.rating-card .appeal{
+  font-size: 16px;
+  margin-bottom: 15px;
+  color: #aaa;
+  animation: fadeInUp 0.5s ease 0.5s forwards;
+  opacity: 0;
+}
+.rating-card .advice p{
+  margin: 5px 0;
+  font-size: 14px;
+  color: #ccc;
+  text-align: left;
+  animation: fadeInUp 0.5s ease 0.7s forwards;
+  opacity: 0;
+}
+.rating-card .extra-insights{
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+  text-align: left;
+  animation: fadeInUp 0.5s ease 0.9s forwards;
+  opacity: 0;
+}
+.rating-card .extra-insights li{
+  margin-bottom: 5px;
+  font-size: 13px;
+  color: #999;
+  position: relative;
+}
+.rating-card .extra-insights li::before{
+  content:'🔥';
+  margin-right: 6px;
+}
+@keyframes popIn{
+  0%{transform: scale(0);}
+  100%{transform: scale(1);}
+}
+@keyframes fadeInUp{
+  0%{opacity:0;transform:translateY(15px);}
+  100%{opacity:1;transform:translateY(0);}
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>ZYGOMAGX</h1>
+<div class="profile-icon" id="profileBtn">👤</div>
+</header>
+
+<div class="container">
+
+<!-- SIGNUP PAGE -->
+<div id="signup-page">
+<div class="card">
+<h2>Signup</h2>
+<input type="text" id="signup-username" placeholder="Username">
+<input type="password" id="signup-password" placeholder="Password">
+<button class="btn" onclick="signup()">Signup</button>
+<p id="signup-msg"></p>
+<p>Already have account? <span style="color:blue;cursor:pointer;" onclick="showLogin()">Login</span></p>
+</div>
+</div>
+
+<!-- LOGIN PAGE -->
+<div id="login-page" class="active">
+<div class="card">
+<h2>Login</h2>
+<input type="text" id="login-username" placeholder="Username">
+<input type="password" id="login-password" placeholder="Password">
+<button class="btn" onclick="login()">Login</button>
+<p id="login-msg"></p>
+<p>New user? <span style="color:blue;cursor:pointer;" onclick="showSignup()">Signup</span></p>
+</div>
+</div>
+
+<!-- HOME PAGE -->
+<div id="home-page">
+<div class="hero">
+<h1>Face Rating & Reality Check</h1>
+<p>Submit your face and get brutally rated by our team. Blackpill knowledge included.</p>
+<button class="btn" onclick="openForm()">Get Your Rating</button>
+</div>
+
+<div class="stats">
+<div><p id="total-submissions">0</p><p>Submissions</p></div>
+<div><p id="total-rated">0</p><p>Rated</p></div>
+</div>
+
+<div class="card">
+<h2>About Us</h2>
+<p>ZYGOMAGX is the ultimate face rating platform. Submit your details, get rated, and learn savage truths about looks and potential.</p>
+</div>
+
+<h2>Blackpill Knowledge</h2>
+<div id="blackpill-feed">
+<div class="blackpill-card">Average male has almost no chance with top 10% women.</div>
+<div class="blackpill-card">Looks > Personality, always.</div>
+<div class="blackpill-card">Height and jawline dictate early social success.</div>
+<div class="blackpill-card">Chad energy cannot be faked, only trained.</div>
+<div class="blackpill-card">Females subconsciously rate men within 0.3 seconds.</div>
+<div class="blackpill-card">Subhuman face = social invisibility unless massive skill or money.</div>
+</div>
+</div>
+
+<!-- RATING FORM -->
+<div id="rating-form">
+<div class="card">
+<h2>Submit Your Details</h2>
+<input type="number" id="age" placeholder="Your Age">
+<input type="number" id="height" placeholder="Your Height (cm)">
+<input type="file" id="facePic" accept="image/*">
+<button class="btn" onclick="submitForm()">Submit</button>
+<p id="form-msg"></p>
+</div>
+</div>
+
+<!-- PROFILE PAGE -->
+<div id="profile-page">
+<div id="profile-content"></div>
+<button class="btn" onclick="goHome()">Back to Home</button>
+</div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-firestore.js"></script>
+
+<script>
+const firebaseConfig = {
+    apiKey:"AIzaSyABj_2mY3MzqhOVHmVshBa8vB_Ui1Rkjpo",
+    authDomain:"zygomaxxed.firebaseapp.com",
+    projectId:"zygomaxxed",
+    storageBucket:"zygomaxxed.firebasestorage.app",
+    messagingSenderId:"516071574631",
+    appId:"1:516071574631:web:86afa5f1b1bab8dd9798c2",
+    measurementId:"G-41VSHP5YX9"
+};
+
+firebase.initializeApp(firebaseConfig);
+var db = firebase.firestore();
+
+let currentUserId = null;
+
+// Page Elements
+const signupPage = document.getElementById('signup-page');
+const loginPage = document.getElementById('login-page');
+const homePage = document.getElementById('home-page');
+const ratingForm = document.getElementById('rating-form');
+const profilePage = document.getElementById('profile-page');
+const signupMsg = document.getElementById('signup-msg');
+const loginMsg = document.getElementById('login-msg');
+const formMsg = document.getElementById('form-msg');
+const totalSubmissions = document.getElementById('total-submissions');
+const totalRated = document.getElementById('total-rated');
+
+document.getElementById('profileBtn').onclick = showProfile;
+
+function showSignup(){loginPage.classList.remove('active');signupPage.classList.add('active');}
+function showLogin(){signupPage.classList.remove('active');loginPage.classList.add('active');}
+function goHome(){profilePage.classList.remove('active');homePage.classList.add('active');}
+
+// Simple password hash
+function hashPassword(p){return btoa(p);}
+
+// SIGNUP
+function signup(){
+    const username = document.getElementById('signup-username').value.trim();
+    const password = document.getElementById('signup-password').value.trim();
+    if(!username || !password){signupMsg.innerText="Fill all fields!"; return;}
+    db.collection("users").where("username","==",username).get().then(snap=>{
+        if(!snap.empty){signupMsg.innerText="Username taken!"; return;}
+        db.collection("users").add({
+            username:username,
+            password:hashPassword(password)
+        }).then(doc=>{
+            signupMsg.innerText="Signup successful! Login now.";
+        });
+    });
+}
+
+// LOGIN
+function login(){
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value.trim();
+    if(!username || !password){loginMsg.innerText="Fill all fields!"; return;}
+    db.collection("users").where("username","==",username).get().then(snap=>{
+        if(snap.empty){loginMsg.innerText="User not found!"; return;}
+        const user = snap.docs[0];
+        if(user.data().password !== hashPassword(password)){loginMsg.innerText="Wrong password!"; return;}
+        currentUserId = user.id;
+        loginPage.classList.remove('active');
+        homePage.classList.add('active');
+        updateStats();
+    });
+}
+
+// Open Rating Form
+function openForm(){homePage.classList.remove('active'); ratingForm.classList.add('active');}
+
+// Compress image to Base64
+function compressImage(file, callback){
+    const reader = new FileReader();
+    reader.onload = function(event){
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = function(){
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const MAX_WIDTH = 300;
+            const scaleSize = MAX_WIDTH / img.width;
+            canvas.width = MAX_WIDTH;
+            canvas.height = img.height * scaleSize;
+            ctx.drawImage(img,0,0,canvas.width,canvas.height);
+            callback(canvas.toDataURL('image/jpeg',0.7));
+        }
+    }
+    reader.readAsDataURL(file);
+}
+
+// Submit Rating
+function submitForm(){
+    const age = document.getElementById('age').value.trim();
+    const height = document.getElementById('height').value.trim();
+    const file = document.getElementById('facePic').files[0];
+    if(!age || !height || !file){formMsg.innerText="Fill all fields!"; return;}
+    compressImage(file,function(base64Img){
+        db.collection("ratings").add({
+            userId: currentUserId,
+            age: age,
+            height: height,
+            imgBase64: base64Img,
+            status: "pending",
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(()=>{
+            formMsg.innerText="Thanks! Wait for your rating.";
+            setTimeout(()=>{ratingForm.classList.remove('active');homePage.classList.add('active');updateStats();},2000);
+        }).catch(err=>{console.error(err); formMsg.innerText="Error submitting form!";});
+    });
+}
+
+// Map rating to appeal and insights
+const ratingData = {
+  "SUBHUMAN": {
+    appeal:"Subhuman from slums",
+    insights:[
+      "Will be socially invisible",
+      "Constant bullying risk",
+      "Unattractive to women",
+      "Career chances limited",
+      "Low confidence aura"
+    ]
+  },
+  "LTN": {
+    appeal:"Average creep uncle walking down street",
+    insights:[
+      "Girls avoid eye contact",
+      "Struggles in social groups",
+      "Unlikely to be desired",
+      "Low sexual market value",
+      "Needs major transformation"
+    ]
+  },
+  "MTN": {
+    appeal:"Average NPC in school",
+    insights:[
+      "Mediocre attention from peers",
+      "Socially forgettable",
+      "Needs grooming upgrade",
+      "Low dating success",
+      "Minimal alpha vibes"
+    ]
+  },
+  "HTN": {
+    appeal:"Class crush",
+    insights:[
+      "Gets noticed by peers",
+      "Moderate social charm",
+      "Potential dating opportunities",
+      "Above average confidence",
+      "Small influencer potential"
+    ]
+  },
+  "CHADLITE": {
+    appeal:"Do you model?",
+    insights:[
+      "Good social presence",
+      "Girls notice instantly",
+      "High confidence aura",
+      "Can be alpha in circles",
+      "Potential for modeling"
+    ]
+  },
+  "CHAD": {
+    appeal:"Girls will ovulate in sight",
+    insights:[
+      "Top-tier attractiveness",
+      "High sexual market value",
+      "Influences social dynamics",
+      "Charisma magnet",
+      "Alpha energy always"
+    ]
+  },
+  "SLAYER": {
+    appeal:"Ultimate meme energy",
+    insights:[
+      "God-tier presence",
+      "Everyone remembers you",
+      "Maxed out confidence",
+      "Instant social dominance",
+      "Unstoppable charisma"
+    ]
+  }
+};
+
+// Show Profile
+function showProfile(){
+    if(!currentUserId){alert("Login first");return;}
+    homePage.classList.remove('active');
+    profilePage.classList.add('active');
+    const content = document.getElementById('profile-content');
+    content.innerHTML = "Loading...";
+    db.collection("ratings").where("userId","==",currentUserId).orderBy("timestamp","desc").get().then(snap=>{
+        if(snap.empty){content.innerHTML="No submissions yet.";}
+        else{
+            content.innerHTML = "";
+            snap.docs.forEach(doc=>{
+                const d = doc.data();
+                const rating = d.rating || "PENDING";
+                const appealText = ratingData[rating]?.appeal || "Pending";
+                const insights = ratingData[rating]?.insights || [
+                    "Await rating...",
+                    "Await rating...",
+                    "Await rating...",
+                    "Await rating...",
+                    "Await rating..."
+                ];
+                const card = document.createElement('div');
+                card.className = "rating-card";
+                card.innerHTML = `<div class="avatar-wrapper"><img src="${d.imgBase64}" class="avatar"></div>
+                                  <h2 class="rating">${rating}</h2>
+                                  <p class="appeal">${appealText}</p>
+                                  <div class="advice">
+                                    <p><strong>Good Features:</strong> ${d.goodFeatures || "-"}</p>
+                                    <p><strong>Bad Features:</strong> ${d.badFeatures || "-"}</p>
+                                  </div>
+                                  <ul class="extra-insights">${insights.map(i=>`<li>${i}</li>`).join("")}</ul>`;
+                content.appendChild(card);
+            });
+        }
+    });
+}
+
+// Update homepage stats
+function updateStats(){
+    db.collection("ratings").get().then(snap=>{
+        totalSubmissions.innerText = snap.size;
+    });
+    db.collection("ratings").where("status","==","rated").get().then(snap=>{
+        totalRated.innerText = snap.size;
+    });
+}
+ </script>
+
+</body>
+  </html>
+  

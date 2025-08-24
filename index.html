@@ -524,13 +524,14 @@ document.getElementById("submitBtn").addEventListener("click", function () {
 
   compressImage(file, function (base64Img) {
     db.collection("ratings").add({
+      userId: currentUserId,  // ✅ added this line bro
       imgBase64: base64Img,
       status: "pending",
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     })
     .then(() => {
       formMsg.innerText = "Submitted ✅ wait for rating!";
-      document.getElementById("facePic").value = "";
+      fileInput.value = ""; // reset file input
     })
     .catch((err) => {
       console.error(err);

@@ -352,10 +352,8 @@ img{max-width:100%;border-radius:8px;margin-top:10px;}
 <!-- RATING FORM -->
 <div id="rating-form">
   <div class="card">
-    <h2>Submit Your Details</h2>
+    <h2>Upload Your Face</h2>
 
-    <input type="number" id="age" placeholder="Your Age">
-    <input type="number" id="height" placeholder="Your Height (cm)">
     <input type="file" id="facePic" accept="image/*">
 
     <button id="submitBtn" class="btn">Submit</button>
@@ -375,11 +373,6 @@ img{max-width:100%;border-radius:8px;margin-top:10px;}
 <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-firestore.js"></script>
 
 <script>
-  
-window.onload = function() {
-    console.log("Page fully loaded, bro 💀🙏🏻");
-    // put your code here
-
 const firebaseConfig = {
     apiKey:"AIzaSyABj_2mY3MzqhOVHmVshBa8vB_Ui1Rkjpo",
     authDomain:"zygomaxxed.firebaseapp.com",
@@ -392,6 +385,9 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 var db = firebase.firestore();
+
+
+    // put your code here
 
 let currentUserId = null;
 
@@ -495,7 +491,6 @@ function compressImage(file, callback){
     reader.readAsDataURL(file);
 }
 
-
 function compressImage(file, callback) {
   const reader = new FileReader();
   reader.onload = function (event) {
@@ -504,7 +499,7 @@ function compressImage(file, callback) {
     img.onload = function () {
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
-      const maxWidth = 400; // shrink wide imgs
+      const maxWidth = 400;
       const scale = maxWidth / img.width;
       canvas.width = maxWidth;
       canvas.height = img.height * scale;
@@ -515,41 +510,26 @@ function compressImage(file, callback) {
   reader.readAsDataURL(file);
 }
 
-// Handle form submit
+// Handle submit
 document.getElementById("submitBtn").addEventListener("click", function () {
-  const age = document.getElementById("age").value.trim();
-  const height = document.getElementById("height").value.trim();
   const fileInput = document.getElementById("facePic");
   const formMsg = document.getElementById("form-msg");
 
-  if (!age) {
-    formMsg.innerText = "Enter your age bro 💀";
-    return;
-  }
-  if (!height) {
-    formMsg.innerText = "Enter your height 🤡";
-    return;
-  }
   if (!fileInput.files.length) {
-    formMsg.innerText = "Upload your mugshot 📸";
+    formMsg.innerText = "Upload your face pic bro 📸";
     return;
   }
 
   const file = fileInput.files[0];
 
-  // Convert + save
   compressImage(file, function (base64Img) {
     db.collection("ratings").add({
-      age: age,
-      height: height,
       imgBase64: base64Img,
       status: "pending",
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     })
     .then(() => {
       formMsg.innerText = "Submitted ✅ wait for rating!";
-      document.getElementById("age").value = "";
-      document.getElementById("height").value = "";
       document.getElementById("facePic").value = "";
     })
     .catch((err) => {
@@ -731,7 +711,7 @@ function updateStats(){
         totalRated.innerText = snap.size;
     });
 }
-  };
+
  </script>
 
 </body>

@@ -114,6 +114,136 @@ img{max-width:100%;border-radius:8px;margin-top:10px;}
   0%{opacity:0;transform:translateY(15px);}
   100%{opacity:1;transform:translateY(0);}
 }
+.coaching-card {
+  background: #111;
+  color: #eee;
+  max-width: 360px;
+  margin: 20px auto;
+  padding: 24px;
+  border-radius: 18px;
+  box-shadow: 0 0 25px rgba(0,0,0,0.7);
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.coaching-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 35px rgba(255,0,128,0.6);
+}
+.card-header {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #ff2f7d;
+}
+.card-sub {
+  font-size: 0.95rem;
+  margin-bottom: 18px;
+  color: #aaa;
+}
+.card-points {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+  text-align: left;
+}
+.card-points li {
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.trial-banner {
+  background: linear-gradient(135deg,#ff2f7d,#ff8800);
+  color: #fff;
+  font-weight: 700;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 16px 0;
+  letter-spacing: 1px;
+}
+.buy-btn {
+  background: #ff2f7d;
+  border: none;
+  outline: none;
+  padding: 14px 22px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  border-radius: 12px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+.buy-btn:hover {
+  background: #ff0059;
+  transform: scale(1.05);
+}
+.form-modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(6px);
+  justify-content: center;
+  align-items: center;
+}
+.form-content {
+  background: #111;
+  color: #eee;
+  padding: 24px;
+  border-radius: 14px;
+  width: 320px;
+  box-shadow: 0 0 30px rgba(255,0,128,0.5);
+  text-align: center;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+.form-content h2 {
+  color: #ff2f7d;
+  margin-bottom: 18px;
+}
+.form-content input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: none;
+  background: #222;
+  color: #fff;
+  outline: none;
+}
+.form-content button[type="submit"] {
+  background: #ff2f7d;
+  border: none;
+  padding: 12px;
+  width: 100%;
+  margin-top: 12px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.form-content button[type="submit"]:hover {
+  background: #ff0059;
+}
+.close-btn {
+  position: absolute;
+  top: 10px; right: 10px;
+  background: transparent;
+  border: none;
+  color: #aaa;
+  font-size: 20px;
+  cursor: pointer;
+}
+.close-btn:hover {
+  color: #fff;
+}
+@keyframes fadeIn {
+  from {opacity: 0; transform: scale(0.9);}
+  to {opacity: 1; transform: scale(1);}
+}
 </style>
 </head>
 <body>
@@ -166,7 +296,48 @@ img{max-width:100%;border-radius:8px;margin-top:10px;}
 <h2>About Us</h2>
 <p>ZYGOMAGX is the ultimate face rating platform. Submit your details, get rated, and learn savage truths about looks and potential.</p>
 </div>
+<div class="coaching-card">
+  <div class="card-header">1-to-1 Looksmaxxing Coaching (30 days)(Just 5$ A Month)</div>
+  <div class="card-sub">Guaranteed to make you ascend +1 rating score 🚀</div>
+  <ul class="card-points">
+    <li>Custom Looksmax plan 🪞</li>
+    <li>VC Also if you want</li>
+    <li>Face + Physique rating</li>
+    <li>Maxxing secrets nobody tells you 🔒</li>
+    <li>Exclusive blackpill wisdom 🧠</li>
+    <li>Direct mentor chat (24/7) 📲</li>
+  </ul>
+  <div class="trial-banner"> 1 HOUR FREE TRIAL(No CC)</div>
+  <button class="buy-btn"onclick="openForm()">🔥 Start Ascending Now</button>
+</div>
+<!-- Buy button triggers form -->
+<div class="coaching-card">
+  <div class="card-header">💘 The GF Guarantee Formula</div>
+  <div class="card-sub">By our elite dating experts – GF guaranteed or you die trying 💀</div>
+  <ul class="card-points">
+    <li>Best dating tips by us</li>
+    <li>Works whether you're a Chad or a sub5 or neruodivergent or neurotypical it's for all</li>
+    <li>Step-by-step strategies to secure a relationship</li>
+    <li>Secrets no simp forum will ever tell you 🔒</li>
+    <li>Free rizz pdf also included</li>
+  </ul>
+  <div class="trial-banner">Only $2.99</div>
+  <button class="buy-btn" onclick="openForm('Relationship Guide')">💘 Buy Now</button>
+</div>
 
+<div id="formModal" class="form-modal">
+  <div class="form-content">
+    <h2>Join the Ascension Program 🚀</h2>
+    <form id="coachingForm">
+      <input type="text" id="name" placeholder="Enter your name" required>
+      <input type="number" id="age" placeholder="Enter your age" required>
+      <input type="text" id="contact" placeholder="Telegram / Instagram / Discord" required>
+      <button type="submit">Submit</button>
+    </form>
+    <p id="thanksMsg" style="display:none;">✅ Thanks, our team will reach out soon!</p>
+    <button class="close-btn" onclick="closeForm()">✖</button>
+  </div>
+</div>
 <h2>Blackpill Knowledge</h2>
 <div id="blackpill-feed">
 <div class="blackpill-card">Average male has almost no chance with top 10% women.</div>
@@ -313,6 +484,44 @@ function submitForm(){
         }).catch(err=>{console.error(err); formMsg.innerText="Error submitting form!";});
     });
 }
+// Open / Close modal
+function openForm(){ 
+  document.getElementById("formModal").style.display = "flex"; 
+}
+function closeForm(){ 
+  document.getElementById("formModal").style.display = "none"; 
+}
+
+// Handle form submit -> push to Firestore
+document.getElementById("coachingForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  
+  const name = document.getElementById("name").value.trim();
+  const age = document.getElementById("age").value.trim();
+  const contact = document.getElementById("contact").value.trim();
+
+  db.collection("coachingRequests").add({
+    name: name,
+    age: age,
+    contact: contact,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(()=>{
+    // hide form, show thanks
+    document.getElementById("coachingForm").style.display="none";
+    document.getElementById("thanksMsg").style.display="block";
+
+    // auto close after 2.5s
+    setTimeout(()=>{
+      closeForm();
+      // reset form back for next time
+      document.getElementById("coachingForm").reset();
+      document.getElementById("coachingForm").style.display="block";
+      document.getElementById("thanksMsg").style.display="none";
+    }, 2500);
+  }).catch((err)=>{
+    alert("Error saving: " + err);
+  });
+});
 
 // Map rating to appeal and insights
 const ratingData = {
@@ -396,30 +605,43 @@ function showProfile(){
     const content = document.getElementById('profile-content');
     content.innerHTML = "Loading...";
     db.collection("ratings").where("userId","==",currentUserId).orderBy("timestamp","desc").get().then(snap=>{
-        if(snap.empty){content.innerHTML="No submissions yet.";}
-        else{
+        if(snap.empty){
+            content.innerHTML="No submissions yet.";
+        } else {
             content.innerHTML = "";
             snap.docs.forEach(doc=>{
                 const d = doc.data();
-                const rating = d.rating || "PENDING";
-                const appealText = ratingData[rating]?.appeal || "Pending";
-                const insights = ratingData[rating]?.insights || [
+                
+                // normalize to uppercase for lookup
+                const ratingKey = (d.rating || "PENDING").toUpperCase();
+                const appealText = ratingData[ratingKey]?.appeal || "Pending";
+                const insights = ratingData[ratingKey]?.insights || [
                     "Await rating...",
                     "Await rating...",
                     "Await rating...",
                     "Await rating...",
                     "Await rating..."
                 ];
+                
+                // pretty print title (capitalize first letter, lowercase rest)
+                const displayRating = d.rating 
+                    ? d.rating.charAt(0).toUpperCase() + d.rating.slice(1).toLowerCase()
+                    : "Pending";
+                
                 const card = document.createElement('div');
                 card.className = "rating-card";
-                card.innerHTML = `<div class="avatar-wrapper"><img src="${d.imgBase64}" class="avatar"></div>
-                                  <h2 class="rating">${rating}</h2>
-                                  <p class="appeal">${appealText}</p>
-                                  <div class="advice">
-                                    <p><strong>Good Features:</strong> ${d.goodFeatures || "-"}</p>
-                                    <p><strong>Bad Features:</strong> ${d.badFeatures || "-"}</p>
-                                  </div>
-                                  <ul class="extra-insights">${insights.map(i=>`<li>${i}</li>`).join("")}</ul>`;
+                card.innerHTML = `
+                    <div class="avatar-wrapper"><img src="${d.imgBase64}" class="avatar"></div>
+                    <h2 class="rating">${displayRating}</h2>
+                    <p class="appeal">${appealText}</p>
+                    <div class="advice">
+                        <p><strong>Good Features:</strong> ${d.goodFeatures || "-"}</p>
+                        <p><strong>Bad Features:</strong> ${d.badFeatures || "-"}</p>
+                    </div>
+                    <ul class="extra-insights">
+                        ${insights.map(i=>`<li>${i}</li>`).join("")}
+                    </ul>
+                `;
                 content.appendChild(card);
             });
         }
@@ -438,5 +660,4 @@ function updateStats(){
  </script>
 
 </body>
-  </html>
-  
+</html>

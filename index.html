@@ -375,6 +375,9 @@ img{max-width:100%;border-radius:8px;margin-top:10px;}
 <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-firestore.js"></script>
 
 <script>
+  window.addEventListener("load", (event) => {
+  console.log("page is fully loaded");
+
 const firebaseConfig = {
     apiKey:"AIzaSyABj_2mY3MzqhOVHmVshBa8vB_Ui1Rkjpo",
     authDomain:"zygomaxxed.firebaseapp.com",
@@ -726,6 +729,7 @@ function updateStats(){
         totalRated.innerText = snap.size;
     });
 }
+  });
  </script>
 
 </body>

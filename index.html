@@ -410,6 +410,7 @@ function goHome(){profilePage.classList.remove('active');homePage.classList.add(
 function hashPassword(p){return btoa(p);}
 
 // SIGNUP
+
 // SIGNUP
 function signup(){
     const username = document.getElementById('signup-username').value.trim();
@@ -464,7 +465,6 @@ function logout(){
     homePage.classList.remove('active');
     loginPage.classList.add('active');
 }
-
 // Open Rating Form
 function openForm2(){homePage.classList.remove('active'); ratingForm.classList.add('active');}
 
@@ -490,10 +490,17 @@ function compressImage(file, callback){
 
 // Submit Rating
 function submitForm(){
-    const age = document.getElementById('age').value.trim();
-    const height = document.getElementById('height').value.trim();
-    const file = document.getElementById('facePic').files[0];
-    if(!age || !height || !file){formMsg.innerText="Fill all fields!"; return;}
+    const age = document.getElementById('age')?.value.trim();
+    const height = document.getElementById('height')?.value.trim();
+    const fileInput = document.getElementById('facePic');
+    const file = fileInput ? fileInput.files[0] : null;
+
+    if(!age || !height || !file){
+        formMsg.innerText = "Fill all fields!";
+        console.log("DEBUG ->", {age, height, file});
+        return;
+    }
+
     compressImage(file,function(base64Img){
         db.collection("ratings").add({
             userId: currentUserId,
@@ -504,8 +511,15 @@ function submitForm(){
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         }).then(()=>{
             formMsg.innerText="Thanks! Wait for your rating.";
-            setTimeout(()=>{ratingForm.classList.remove('active');homePage.classList.add('active');updateStats();},2000);
-        }).catch(err=>{console.error(err); formMsg.innerText="Error submitting form!";});
+            setTimeout(()=>{
+                ratingForm.classList.remove('active');
+                homePage.classList.add('active');
+                updateStats();
+            },2000);
+        }).catch(err=>{
+            console.error(err);
+            formMsg.innerText="Error submitting form!";
+        });
     });
 }
 // Open / Close modal

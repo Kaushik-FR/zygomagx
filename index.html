@@ -353,14 +353,15 @@ img{max-width:100%;border-radius:8px;margin-top:10px;}
 <div id="rating-form">
   <div class="card">
     <h2>Submit Your Details</h2>
+
     <input type="number" id="age" placeholder="Your Age">
     <input type="number" id="height" placeholder="Your Height (cm)">
     <input type="file" id="facePic" accept="image/*">
-    <button class="btn" onclick="submitForm()">Submit</button>
+
+    <button id="submitBtn" class="btn">Submit</button>
     <p id="form-msg"></p>
   </div>
 </div>
-
 
 <!-- PROFILE PAGE -->
 <div id="profile-page">
@@ -489,46 +490,69 @@ function compressImage(file, callback){
     reader.readAsDataURL(file);
 }
 
-// Submit Rating
-function submitForm(){
-    const age = document.getElementById('age').value.trim();
-    const height = document.getElementById('height').value.trim();
-    const fileInput = document.getElementById('facePic');
-    const file = fileInput && fileInput.files.length > 0 ? fileInput.files[0] : null;
-    const formMsg = document.getElementById("form-msg"); // ✅ FIXED
 
-    if(!age || !height || !file){
-        formMsg.innerText = "Fill all fields!";
-        console.log("DEBUG =>", {age, height, file});
-        return;
-    }
-
-    compressImage(file,function(base64Img){
-        db.collection("ratings").add({
-            userId: currentUserId,
-            age: age,
-            height: height,
-            imgBase64: base64Img,
-            status: "pending",
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(()=>{
-            formMsg.innerText="Thanks! Wait for your rating.";
-            
-            // only run these if they exist
-            const ratingForm = document.getElementById("rating-form");
-            const homePage = document.getElementById("home-page");
-            
-            setTimeout(()=>{
-                if(ratingForm) ratingForm.classList.remove('active');
-                if(homePage) homePage.classList.add('active');
-                if(typeof updateStats === "function") updateStats();
-            },2000);
-        }).catch(err=>{
-            console.error(err);
-            formMsg.innerText="Error submitting form!";
-        });
-    });
+function compressImage(file, callback) {
+  const reader = new FileReader();
+  reader.onload = function (event) {
+    const img = new Image();
+    img.src = event.target.result;
+    img.onload = function () {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const maxWidth = 400; // shrink wide imgs
+      const scale = maxWidth / img.width;
+      canvas.width = maxWidth;
+      canvas.height = img.height * scale;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      callback(canvas.toDataURL("image/jpeg", 0.7));
+    };
+  };
+  reader.readAsDataURL(file);
 }
+
+// Handle form submit
+document.getElementById("submitBtn").addEventListener("click", function () {
+  const age = document.getElementById("age").value.trim();
+  const height = document.getElementById("height").value.trim();
+  const fileInput = document.getElementById("facePic");
+  const formMsg = document.getElementById("form-msg");
+
+  if (!age) {
+    formMsg.innerText = "Enter your age bro 💀";
+    return;
+  }
+  if (!height) {
+    formMsg.innerText = "Enter your height 🤡";
+    return;
+  }
+  if (!fileInput.files.length) {
+    formMsg.innerText = "Upload your mugshot 📸";
+    return;
+  }
+
+  const file = fileInput.files[0];
+
+  // Convert + save
+  compressImage(file, function (base64Img) {
+    db.collection("ratings").add({
+      age: age,
+      height: height,
+      imgBase64: base64Img,
+      status: "pending",
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+      formMsg.innerText = "Submitted ✅ wait for rating!";
+      document.getElementById("age").value = "";
+      document.getElementById("height").value = "";
+      document.getElementById("facePic").value = "";
+    })
+    .catch((err) => {
+      console.error(err);
+      formMsg.innerText = "Error submitting 💀 try again";
+    });
+  });
+});
 // Open / Close modal
 function openForm(){ 
   document.getElementById("formModal").style.display = "flex"; 

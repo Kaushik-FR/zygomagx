@@ -351,15 +351,16 @@ img{max-width:100%;border-radius:8px;margin-top:10px;}
 
 <!-- RATING FORM -->
 <div id="rating-form">
-<div class="card">
-<h2>Submit Your Details</h2>
-<input type="number" id="age" placeholder="Your Age">
-<input type="number" id="height" placeholder="Your Height (cm)">
-<input type="file" id="facePic" accept="image/*">
-<button class="btn" onclick="submitForm()">Submit</button>
-<p id="form-msg"></p>
+  <div class="card">
+    <h2>Submit Your Details</h2>
+    <input type="number" id="age" placeholder="Your Age">
+    <input type="number" id="height" placeholder="Your Height (cm)">
+    <input type="file" id="facePic" accept="image/*">
+    <button class="btn" onclick="submitForm()">Submit</button>
+    <p id="form-msg"></p>
+  </div>
 </div>
-</div>
+
 
 <!-- PROFILE PAGE -->
 <div id="profile-page">
@@ -490,14 +491,15 @@ function compressImage(file, callback){
 
 // Submit Rating
 function submitForm(){
-    const age = document.getElementById('age')?.value.trim();
-    const height = document.getElementById('height')?.value.trim();
+    const age = document.getElementById('age').value.trim();
+    const height = document.getElementById('height').value.trim();
     const fileInput = document.getElementById('facePic');
-    const file = fileInput ? fileInput.files[0] : null;
+    const file = fileInput && fileInput.files.length > 0 ? fileInput.files[0] : null;
+    const formMsg = document.getElementById("form-msg"); // ✅ FIXED
 
     if(!age || !height || !file){
         formMsg.innerText = "Fill all fields!";
-        console.log("DEBUG ->", {age, height, file});
+        console.log("DEBUG =>", {age, height, file});
         return;
     }
 
@@ -511,10 +513,15 @@ function submitForm(){
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         }).then(()=>{
             formMsg.innerText="Thanks! Wait for your rating.";
+            
+            // only run these if they exist
+            const ratingForm = document.getElementById("rating-form");
+            const homePage = document.getElementById("home-page");
+            
             setTimeout(()=>{
-                ratingForm.classList.remove('active');
-                homePage.classList.add('active');
-                updateStats();
+                if(ratingForm) ratingForm.classList.remove('active');
+                if(homePage) homePage.classList.add('active');
+                if(typeof updateStats === "function") updateStats();
             },2000);
         }).catch(err=>{
             console.error(err);

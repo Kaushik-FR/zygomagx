@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+            <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -106,6 +106,7 @@ img{max-width:100%;border-radius:8px;margin-top:10px;}
   content:'🔥';
   margin-right: 6px;
 }
+
 @keyframes popIn{
   0%{transform: scale(0);}
   100%{transform: scale(1);}
@@ -113,6 +114,71 @@ img{max-width:100%;border-radius:8px;margin-top:10px;}
 @keyframes fadeInUp{
   0%{opacity:0;transform:translateY(15px);}
   100%{opacity:1;transform:translateY(0);}
+}
+/* Potential Upsell Section */
+.rating-card .potential {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 15px;
+  background: #111;
+  border: 2px solid #0f0;
+  box-shadow: 0 0 15px rgba(0,255,0,0.3);
+  animation: fadeInUp 0.5s ease 1.1s forwards;
+  opacity: 0;
+}
+
+.rating-card .boost {
+  font-size: 16px;
+  font-weight: bold;
+  color: #0f0;
+  margin-bottom: 10px;
+}
+
+.rating-card .upsell .deal {
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 8px;
+}
+
+.rating-card .upsell .highlight {
+  color: #0f0;
+  font-weight: bold;
+}
+
+.rating-card .price {
+  margin-bottom: 12px;
+}
+
+.rating-card .price .cut {
+  text-decoration: line-through;
+  color: #777;
+  margin-right: 6px;
+  font-size: 14px;
+}
+
+.rating-card .price .new {
+  color: #0f0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.rating-card .buy-btn {
+  display: inline-block;
+  background: linear-gradient(90deg, #0f0, #0a0);
+  color: #000;
+  font-weight: bold;
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(0,255,0,0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.rating-card .buy-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 18px rgba(0,255,0,0.6);
 }
 .coaching-card {
   background: #111;
@@ -282,8 +348,8 @@ img{max-width:100%;border-radius:8px;margin-top:10px;}
 <!-- HOME PAGE -->
 <div id="home-page">
 <div class="hero">
-<h1>Face Rating & Reality Check</h1>
-<p>Submit your face and get brutally rated by our team. Blackpill knowledge included.</p>
+<h1>Face Ratings By Real People And AI</h1>
+<p>Better then any paid app, free first rating</p>
 <button class="btn" onclick="openForm2()">Get Your Rating</button>
 </div>
 
@@ -441,23 +507,27 @@ function login(){
         if(user.data().password !== hashPassword(password)){loginMsg.innerText="Wrong password!"; return;}
         
         currentUserId = user.id;
-        // save session in localStorage
-        localStorage.setItem("currentUserId", currentUserId);
+// save session in localStorage
+localStorage.setItem("currentUserId", currentUserId);
 
-        loginPage.classList.remove('active');
-        homePage.classList.add('active');
-        updateStats();
+loginPage.classList.remove('active');  
+    homePage.classList.add('active');  
+    updateStats();
+
+
     });
 }
 
 // AUTO LOGIN if localStorage has user
 window.addEventListener("load", () => {
     const savedUserId = localStorage.getItem("currentUserId");
-    if(savedUserId){
-        currentUserId = savedUserId;
-        loginPage.classList.remove('active');
-        homePage.classList.add('active');
-        updateStats();
+if(savedUserId){
+currentUserId = savedUserId;
+loginPage.classList.remove('active');
+homePage.classList.add('active');
+updateStats();
+
+
     }
 });
 
@@ -678,10 +748,26 @@ function showProfile(){
                     "Await rating..."
                 ];
                 
-                // pretty print title (capitalize first letter, lowercase rest)
+                // pretty print title
                 const displayRating = d.rating 
                     ? d.rating.charAt(0).toUpperCase() + d.rating.slice(1).toLowerCase()
                     : "Pending";
+
+                // add potential boost except chadlite/chad/slayer
+                let potentialBoost = "";
+                const blocked = ["CHADLITE","CHAD","SLAYER"];
+                if(!blocked.includes(ratingKey)){
+                    potentialBoost = `
+                        <div class="potential">
+                            <p class="boost">✨ Max Potential: +2 Ratings Possible</p>
+                            <div class="upsell">
+                                <p class="deal">Unlock a <span class="highlight">custom looksmaxing plan</span> with <b>1-on-1 coaching</b> to ascend faster.</p>
+                                <p class="price"><span class="cut">$12</span> <span class="new">$7.99</span></p>
+                                <button class="buy-btn">Buy Now</button>
+                            </div>
+                        </div>
+                    `;
+                }
                 
                 const card = document.createElement('div');
                 card.className = "rating-card";
@@ -696,6 +782,7 @@ function showProfile(){
                     <ul class="extra-insights">
                         ${insights.map(i=>`<li>${i}</li>`).join("")}
                     </ul>
+                    ${potentialBoost}
                 `;
                 content.appendChild(card);
             });
